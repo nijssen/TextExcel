@@ -9,6 +9,6 @@ package textexcel.cell;
  *
  * @author thomas
  */
-public interface Cell {
+public interface Cell {    
     
 }

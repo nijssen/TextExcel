@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package textexcel;
 
 import textexcel.cell.*;
@@ -15,6 +9,7 @@ import textexcel.cell.*;
 public class CellMatrix {
     
     private Cell[][] data;
+    private String[] cellNames;
     
     /**
      * Create a new CellMatrix class.
@@ -23,6 +18,20 @@ public class CellMatrix {
      * @returns new CellMatrix class
      */
     public CellMatrix(int width, int height) {
-        this.data = new Cell[height][width];
+        this.data = new StringCell[height][width]; //TODO support more types
+        this.setCellNames();
     }
+
+    private void setCellNames() {
+        int k = 0;
+        for(int i = 0; i < this.data.length; i++) {
+            for(int j = 0; j < this.data[0].length; j++) {
+                char col = (char) ('A' + j);
+                this.cellNames[k++] = col + "" + i;
+            }
+        }
+    }
+    
+    
+    
 }

@@ -21,13 +21,15 @@ public class TextExcel {
         while(true) {
             String line = sc.nextLine();
             
-            evaluateExpression(matrix, line);
+            evaluateExpression(line);
         }
         
     }
 
-    private static void evaluateExpression(CellMatrix matrix, String line) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    private static void evaluateExpression(String line) {
+        if(line.equals("print")) {
+            System.out.println(matrix);
+        }
     }
     
 }
