@@ -10,5 +10,15 @@ package textexcel.cell;
  * @author thomas
  */
 public interface Cell {    
+    public void setValue(Object input);
+    public Object getInputValue();
+    public void clear(); //optional
+    
+    /**
+     * If length is 0, then print it for getting the value.
+     * @param length
+     * @return 
+     */
+    public String getDisplayValue(int length);
     
 }

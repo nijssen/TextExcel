@@ -1,0 +1,5 @@
+Cell
+    get/store value
+    get displayed value
+        length of desired output?
+    type of cell

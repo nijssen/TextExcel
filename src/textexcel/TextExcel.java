@@ -19,6 +19,7 @@ public class TextExcel {
         matrix = new CellMatrix(10, 10);
         
         while(true) {
+            System.out.print("Enter a command: ");
             String line = sc.nextLine();
             
             evaluateExpression(line);
