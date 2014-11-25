@@ -40,7 +40,7 @@ public abstract class Cell {
      * @return
      */
     public String getDisplayValue(int length) {
-        if (this.value == null && length == 0) {
+        if (this.value.toString().length() == 0 && length == 0) {
             return "<empty>";
         } else if (this.value == null && length > 0) {
             return "";
