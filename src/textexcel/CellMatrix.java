@@ -1,6 +1,7 @@
 package textexcel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import textexcel.cell.*;
 
 /**
@@ -37,12 +38,29 @@ public class CellMatrix {
     @Override
     public String toString() {
         StringBuilder ret = new StringBuilder();
-        for(int r = 0; r < this.data.length; r++) {
-            char rname = (char) ('A' + r);
-            ret.append(new StringCell(rname).getDisplayValue(COLUMN_WIDTH));
+        
+        //Re-usable line
+        int lineLength = (COLUMN_WIDTH * (this.data[0].length + 1)) + this.data[0].length;
+        char[] line = new char[lineLength];
+        Arrays.fill(line, '-');
+        for(int i = COLUMN_WIDTH; i < lineLength; i += COLUMN_WIDTH + 1) {
+            line[i] = '+';
+        }
+        
+        //Header row
+        ret.append(new StringCell("", false).getDisplayValue(COLUMN_WIDTH)); //empty cell
+        for(int i = 0; i < this.data[0].length; i++) {
+            char rname = (char) ('A' + i);
+            ret.append(new StringCell(rname, false).getDisplayValue(COLUMN_WIDTH));
             ret.append('|');
         }
         ret.append('\n');
+        ret.append(line);
+        
+        //Data rows
+        for(int i = 0; i < this.data.length; )
+        
+        
         return ret.toString();
     }
     

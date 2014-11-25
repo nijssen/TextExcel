@@ -4,8 +4,8 @@ package textexcel.cell;
  *
  * @author thomas
  */
-public class StringCell implements Cell {
-    private String value;
+public class StringCell extends Cell {
+    private boolean quoteOnPrint = true;
     
     /**
      * Create a new StringCell class.
@@ -14,24 +14,28 @@ public class StringCell implements Cell {
      * @returns new StringCell class
      */
     public StringCell() {
-        this.value = "";
+        this(null, true);
     }
     
     public StringCell(String value) {
-        this.value = value;
+        this(value, true);
     }
     
     public StringCell(char value) {
-        this.value = "" + value;
+        this("" + value, true);
     }
-
+    
+    public StringCell(char value, boolean quoteOnPrint) {
+        this("" + value, quoteOnPrint);
+    }
+    
+    public StringCell(String value, boolean quoteOnPrint) {
+        this.value = value;
+        this.quoteOnPrint = quoteOnPrint;
+    }
+    
     @Override
     public void setValue(Object input) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Object getInputValue() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -42,14 +46,18 @@ public class StringCell implements Cell {
 
     /**
      * 
-     * Special case for when length is -1, this is for the header row.
      * @param length 
      * @return 
      */
     @Override
     public String getDisplayValue(int length) {
-        if(length == -1) return this.value;
-        if(length == 0) return '"' + this.value + '"';
+        String qc = this.quoteOnPrint ? "\"" : "";
         
+        String tmpStor = this.value + ""; //copy
+        this.value = qc + this.value + qc; //add quotes only for displaying...
+        String ret = super.getDisplayValue(length);
+        this.value = tmpStor; //...and return them afterwards
+        
+        return ret;
     }
 }

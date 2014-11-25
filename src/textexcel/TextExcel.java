@@ -20,16 +20,17 @@ public class TextExcel {
         
         while(true) {
             System.out.print("Enter a command: ");
-            String line = sc.nextLine();
+            String line = "print"; //sc.nextLine();
             
             evaluateExpression(line);
+            break;
         }
         
     }
 
     private static void evaluateExpression(String line) {
         if(line.equals("print")) {
-            System.out.println(matrix);
+            System.out.println("\n" + matrix);
         }
     }
     
