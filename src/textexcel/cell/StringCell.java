@@ -5,59 +5,49 @@ package textexcel.cell;
  * @author thomas
  */
 public class StringCell extends Cell {
-    private boolean quoteOnPrint = true;
-    
+
+    private String internalValue;
+
     /**
      * Create a new StringCell class.
-     * 
+     *
      * @author thomas
      * @returns new StringCell class
      */
     public StringCell() {
-        this(null, true);
+        this("");
     }
-    
-    public StringCell(String value) {
-        this(value, true);
-    }
-    
+
     public StringCell(char value) {
-        this("" + value, true);
+        this("" + value);
     }
-    
-    public StringCell(char value, boolean quoteOnPrint) {
-        this("" + value, quoteOnPrint);
-    }
-    
-    public StringCell(String value, boolean quoteOnPrint) {
-        this.value = value;
-        this.quoteOnPrint = quoteOnPrint;
-    }
-    
-    @Override
-    public void setValue(Object input) {
-        throw new UnsupportedOperationException("Not supported yet.");
+
+    public StringCell(String expr) {
+        this.expr = expr;
+        this.internalValue = "";
+        this.setValue(expr);
     }
 
     @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setValue(String expr) {
+        super.setValue(expr);
+        this.internalValue = this.expr.trim();
+
+        if (this.internalValue.length() > 0) {
+
+            //remove extra quotes
+            if (this.internalValue.charAt(0) == '"') {
+                this.internalValue = this.internalValue.substring(1);
+            }
+            if (this.internalValue.charAt(this.internalValue.length() - 1) == '"') {
+                this.internalValue = this.internalValue.substring(0, this.internalValue.length() - 2);
+            }
+        }
+        this.value = this.internalValue;
     }
 
-    /**
-     * 
-     * @param length 
-     * @return 
-     */
     @Override
-    public String getDisplayValue(int length) {
-        String qc = this.quoteOnPrint ? "\"" : "";
-        
-        String tmpStor = this.value + ""; //copy
-        this.value = qc + this.value + qc; //add quotes only for displaying...
-        String ret = super.getDisplayValue(length);
-        this.value = tmpStor; //...and return them afterwards
-        
-        return ret;
+    protected boolean needsQuotes() {
+        return true;
     }
 }

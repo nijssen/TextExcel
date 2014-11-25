@@ -12,12 +12,15 @@ import java.util.Arrays;
  * @author thomas
  */
 public abstract class Cell {
-
     protected Object value;
     protected String expr;
 
-    public void setValue(Object input) {
-        this.value = input;
+    public Object getValue() {
+        return this.value;
+    }
+    
+    public void setValue(String expr) {
+        this.expr = expr;
     }
 
     public String getInputValue() {
@@ -41,16 +44,17 @@ public abstract class Cell {
             return "<empty>";
         } else if (this.value == null && length > 0) {
             return "";
-        } else if (this.value != null && length == 0) {
-            return (String)this.value;
+        } else if(this.value != null && length == 0) {
+            //special case for string cell in which we need quotes
+            String quotes = this.needsQuotes() ? "\"" : "";
+            return quotes + this.value + quotes;
         } else {
-
             //the value
             String v = this.value.toString();
 
             //truncate to length
             if (v.length() > 12) {
-                v = v.substring(0, 10) + ">";
+                v = v.substring(0, 11) + ">";
                 return v; //no need to center
             }
 
@@ -62,5 +66,9 @@ public abstract class Cell {
 
             return padStr + v + padStr + (padLength % 2 != 0 ? " " : "");
         }
+    }
+
+    protected boolean needsQuotes() {
+        return false;
     }
 }
