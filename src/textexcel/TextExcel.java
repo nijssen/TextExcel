@@ -12,7 +12,7 @@ public class TextExcel {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
         
         matrix = new CellMatrix(10, 10);
@@ -24,13 +24,12 @@ public class TextExcel {
                 evaluateExpression(line);
             } catch(Exception e) {
                 System.err.println(e.getMessage() + "\n");
-                e.printStackTrace();
             }
         }
         
     }
 
-    private static void evaluateExpression(String line) {
+    private static void evaluateExpression(String line) throws Exception {
         //Is it a command?
         if("print,quit".contains(line)) {
             evaluateCommand(line);
@@ -62,18 +61,18 @@ public class TextExcel {
         throw new UnsupportedOperationException("Bad command");
     }
 
-    private static void evaluateAssignment(String line) {
+    private static void evaluateAssignment(String line) throws Exception {
         String parts[] = line.split("=");
         
         String cellName = parts[0].trim();
         String intendedValue = parts[1].trim();
         
         //Set the value
-        matrix.setValue(cellName, intendedValue);
+        matrix.set(cellName, intendedValue);
     }
 
     private static void evaluateGetting(String line) {
-        System.out.println(line + " = " + matrix.getValue(line));
+        System.out.println(line + " = " + matrix.get(line));
     }
     
 }

@@ -29,11 +29,16 @@ public class StringCell extends Cell {
         this.expr = expr;
         this.isHeaderCell = isHeaderCell;
         this.value = "";
+        try {
+            this.set(expr);
+        } catch (Exception ex) {
+            //probably won't ever happen
+        }
     }
 
     @Override
-    public void setValue(String expr) {
-        this.expr = expr;
+    public void set(String expr) throws Exception {
+        super.set(expr);
         String ret = expr.trim();
 
         if (ret.length() > 0 && !this.isHeaderCell) {
@@ -45,7 +50,7 @@ public class StringCell extends Cell {
             }
             
             if (ret.charAt(ret.length() - 1) == '"') {
-                ret = ret.substring(0, ret.length() - 2);
+                ret = ret.substring(0, ret.length() - 1);
             }
         }
         this.value = ret;

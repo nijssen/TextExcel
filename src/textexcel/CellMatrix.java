@@ -13,6 +13,8 @@ public class CellMatrix {
     private Cell[][] data;
     private ArrayList<String> cellNames;
     private static final int COLUMN_WIDTH = 12;
+    private static final String CELL_CLASSES_PREFIX = "textexcel.cell.";
+    private static final String CELL_CLASSES = "DoubleCell,DateCell,StringCell";
     
     /**
      * Create a new CellMatrix class.
@@ -21,7 +23,7 @@ public class CellMatrix {
      * @returns new CellMatrix class
      */
     public CellMatrix(int width, int height) {
-        this.data = new StringCell[height][width]; //TODO support more types
+        this.data = new Cell[height][width]; //TODO support more types
         this.cellNames = new ArrayList<>();
         this.setCellNames();
         this.setDefaultValues();
@@ -105,23 +107,39 @@ public class CellMatrix {
         return ret;
     }
     
-    public void setValue(String cellName, String expr) {
+    public void set(String cellName, String expr) throws Exception {
         Coordinate c = this.cellNameToCoord(cellName);
         
-        this.setValue(c.row, c.column, expr);
+        this.set(c.row, c.column, expr);
     }
 
-    public void setValue(int cellIndexR, int cellIndexC, String expr) {
-        this.data[cellIndexR][cellIndexC].setValue(expr);
+    public void set(int cellIndexR, int cellIndexC, String expr) throws Exception {
+        //Try to fit the expression to each type of cell
+        for(String cn : CELL_CLASSES.split(",")) {
+            Cell that = null;
+            try {
+                that = (Cell) Class.forName(CELL_CLASSES_PREFIX + cn).newInstance();
+                that.set(expr); //this will fail if the input isn't the right type for it
+            } catch(InstantiationException | ExceptionInInitializerError ie) {
+                throw new Exception("Instantiation failed: " + ie.getMessage());
+            } catch(Exception e) {
+                continue; //try the next one
+            }
+            
+            this.data[cellIndexR][cellIndexC] = (Cell)that; //only happens if prev is success
+            return;
+        }
+        
+        throw new Exception("No suitable data type found.");
     }
     
-    public String getValue(String cellName) {
+    public String get(String cellName) {
         Coordinate c = this.cellNameToCoord(cellName);
         
-        return this.getValue(c.row, c.column);
+        return this.get(c.row, c.column);
     }
 
-    private String getValue(int row, int column) {
+    private String get(int row, int column) {
         return this.data[row][column].getDisplayValue(0);
     }
 

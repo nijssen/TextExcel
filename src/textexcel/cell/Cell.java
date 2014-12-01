@@ -15,11 +15,11 @@ public abstract class Cell {
     protected Object value;
     protected String expr;
 
-    public Object getValue() {
+    public Object get() {
         return this.value;
     }
     
-    public void setValue(String expr) {
+    public void set(String expr) throws Exception {
         this.expr = expr;
     }
 
@@ -40,37 +40,41 @@ public abstract class Cell {
      * @return
      */
     public String getDisplayValue(int length) {
-        this.computeValue();
+        String cv = this.computeValue();
         
-        if (this.value.toString().length() == 0 && length == 0) {
+        if (cv != null && cv.length() == 0 && length == 0) {
             return "<empty>";
-        } else if (this.value == null && length > 0) {
+        } else if (cv == null && length > 0) {
             return "";
-        } else if(this.value != null && length == 0) {
+        } else if(cv != null && length == 0) {
             //special case for string cell in which we need quotes
             String quotes = this instanceof StringCell ? "\"" : "";
-            return quotes + this.value + quotes;
+            return quotes + cv + quotes + "\n" + this.getClassType();
         } else {
-            //the value
-            String v = this.value.toString();
-
             //truncate to length
-            if (v.length() > 12) {
-                v = v.substring(0, 11) + ">";
-                return v; //no need to center
+            if (cv.length() > 12) {
+                cv = cv.substring(0, 11) + ">";
+                return cv; //no need to center
             }
 
             //padding, to center
-            int padLength = length - v.length();
+            int padLength = length - cv.length();
             char[] pad = new char[padLength / 2];
             Arrays.fill(pad, ' ');
             String padStr = new String(pad, 0, pad.length);
 
-            return padStr + v + padStr + (padLength % 2 != 0 ? " " : "");
+            return padStr + cv + padStr + (padLength % 2 != 0 ? " " : "");
         }
     }
 
-    protected void computeValue() {
-        this.value = "";
+    protected String computeValue() {
+        return this.value.toString();
+    }
+
+    private String getClassType() {
+        String cn = this.getClass().getName();
+        String name = cn.substring(cn.lastIndexOf('.') + 1, cn.indexOf("Cell"));
+        name = (this instanceof DoubleCell) ? "Number" : name; //we'll kindly call this a "special" case...
+        return "[" + name + "]";
     }
 }
