@@ -20,8 +20,12 @@ public class TextExcel {
         while(true) {
             System.out.print("Enter a command: ");
             String line = sc.nextLine();
-            
-            evaluateExpression(line);
+            try {
+                evaluateExpression(line);
+            } catch(Exception e) {
+                System.err.println(e.getMessage() + "\n");
+                e.printStackTrace();
+            }
         }
         
     }

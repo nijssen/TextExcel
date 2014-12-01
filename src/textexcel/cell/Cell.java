@@ -40,13 +40,15 @@ public abstract class Cell {
      * @return
      */
     public String getDisplayValue(int length) {
+        this.computeValue();
+        
         if (this.value.toString().length() == 0 && length == 0) {
             return "<empty>";
         } else if (this.value == null && length > 0) {
             return "";
         } else if(this.value != null && length == 0) {
             //special case for string cell in which we need quotes
-            String quotes = this.needsQuotes() ? "\"" : "";
+            String quotes = this instanceof StringCell ? "\"" : "";
             return quotes + this.value + quotes;
         } else {
             //the value
@@ -68,7 +70,7 @@ public abstract class Cell {
         }
     }
 
-    protected boolean needsQuotes() {
-        return false;
+    protected void computeValue() {
+        this.value = "";
     }
 }

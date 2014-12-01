@@ -63,7 +63,7 @@ public class CellMatrix {
         //Data rows
         for(int i = 0; i < this.data.length; i++) {
             ret.append('\n');
-            ret.append(new StringCell(i + 1 + "").getDisplayValue(COLUMN_WIDTH));
+            ret.append(new StringCell(i + 1 + "", true).getDisplayValue(COLUMN_WIDTH));
             ret.append('|');
             
             //Cells within that row
