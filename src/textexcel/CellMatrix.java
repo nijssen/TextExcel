@@ -83,7 +83,7 @@ public class CellMatrix {
         
     }
 
-    private void setDefaultValues() {        
+    public void setDefaultValues() {        
         for(int i = 0; i < this.data.length; i++) {
             for(int j = 0; j < this.data[0].length; j++) {
                 this.data[i][j] = new StringCell("");
@@ -141,6 +141,16 @@ public class CellMatrix {
 
     private String get(int row, int column) {
         return this.data[row][column].getDisplayValue(0);
+    }
+
+    public void clear(String cellName) throws Exception {
+        Coordinate c = this.cellNameToCoord(cellName);
+        
+        this.clear(c.row, c.column);
+    }
+
+    private void clear(int row, int column) throws Exception {
+        this.set(row, column, "");
     }
 
     private static class Coordinate {

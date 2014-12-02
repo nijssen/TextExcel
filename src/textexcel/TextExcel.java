@@ -31,7 +31,7 @@ public class TextExcel {
 
     private static void evaluateExpression(String line) throws Exception {
         //Is it a command?
-        if("print,quit".contains(line)) {
+        if("print,exit,clear".contains(line)) {
             evaluateCommand(line);
             return;
         }
@@ -48,17 +48,30 @@ public class TextExcel {
         }
     }
 
-    private static void evaluateCommand(String line) {
+    private static void evaluateCommand(String line) throws Exception {
         switch (line) {
             case "print":
                 System.out.println(matrix);
                 return;
-            case "quit":
+            case "exit":
+                System.out.println("Farewell!");
                 System.exit(0);
+                return;
+            case "clear": //not given a cell ID, clear all
+                matrix.setDefaultValues();
                 return;
         }
         
-        throw new UnsupportedOperationException("Bad command");
+        String[] parts = line.split("\\s");
+        if(parts.length > 1 && parts[0].equals("clear")) { //clear 1+ cells
+            for(int i = 1; i < parts.length; i++) {
+                try {
+                    matrix.clear(parts[i]);
+                } catch (Exception ex) {
+                    throw new Exception("Could not clear " + parts[i]);
+                }
+            }
+        }
     }
 
     private static void evaluateAssignment(String line) throws Exception {
