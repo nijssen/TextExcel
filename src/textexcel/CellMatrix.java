@@ -2,6 +2,8 @@ package textexcel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import textexcel.cell.*;
 
 /**
@@ -15,6 +17,7 @@ public class CellMatrix {
     private static final int COLUMN_WIDTH = 12;
     private static final String CELL_CLASSES_PREFIX = "textexcel.cell.";
     private static final String CELL_CLASSES = "DoubleCell,DateCell,StringCell";
+    private static final String FILE_RECORD_SEPERATOR = ";";
     
     /**
      * Create a new CellMatrix class.
@@ -151,6 +154,33 @@ public class CellMatrix {
 
     private void clear(int row, int column) throws Exception {
         this.set(row, column, "");
+    }
+
+    public String[] getSaveData() {
+        ArrayList<String> ret = new ArrayList<>();
+        
+        for(Cell[] row : this.data) {
+            StringBuilder cellLine = new StringBuilder();
+            Iterator<Cell> rowI = Arrays.asList(row).iterator();
+            while(rowI.hasNext()) {
+                cellLine.append(rowI.next().getInputValue());
+                cellLine.append(rowI.hasNext() ? FILE_RECORD_SEPERATOR : "");
+            }
+            ret.add(cellLine.toString());
+        }
+        
+        String[] out = new String[this.data.length];
+        ret.toArray(out);
+        return out;
+    }
+
+    public void loadFrom(String[] input) throws Exception {
+        for(int r = 0; r < this.data.length; r++) {
+            String[] cellStrings = input[r].split(FILE_RECORD_SEPERATOR);
+            for(int c = 0; r < this.data[0].length; c++) {
+                this.set(r, c, cellStrings[c]);
+            }
+        }
     }
 
     private static class Coordinate {

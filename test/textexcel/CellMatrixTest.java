@@ -1,5 +1,6 @@
 package textexcel;
 
+import com.sun.xml.internal.ws.policy.AssertionValidationProcessor;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,5 +41,19 @@ public class CellMatrixTest {
     public void setString() throws Exception {
         this.instance.set("G1", "\"abc\"");
         assertEquals("\"abc\"\n[String]", this.instance.get("G1"));
+    }
+    
+    @Test
+    public void clearAll() throws Exception {
+        //do some setting
+        setString();
+        setDate();
+        
+        //now clear it
+        this.instance.setDefaultValues();
+        
+        //check to make sure
+        assertEquals("", this.instance.get("A2"));
+        assertEquals("", this.instance.get("A3"));
     }
 }

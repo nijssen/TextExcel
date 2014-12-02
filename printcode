@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec find * -name '*.java' | xargs a2ps -o /tmp/o.pdf -2 -M Letter
