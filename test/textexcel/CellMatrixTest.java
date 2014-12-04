@@ -1,10 +1,9 @@
 package textexcel;
 
-import com.sun.xml.internal.ws.policy.AssertionValidationProcessor;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -12,13 +11,6 @@ import static org.junit.Assert.*;
  */
 public class CellMatrixTest {
     private CellMatrix instance;
-    
-    public CellMatrixTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
     
     @Before
     public void setUp() {

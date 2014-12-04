@@ -1,7 +1,6 @@
 package textexcel.cell;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class DateCell extends Cell {
     //private Date value;

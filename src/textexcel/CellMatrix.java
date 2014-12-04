@@ -2,7 +2,6 @@ package textexcel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import textexcel.cell.*;
 
@@ -186,8 +185,5 @@ public class CellMatrix {
     private static class Coordinate {
         public int row;
         public int column;
-    }
-    
-    
-    
+    }    
 }
