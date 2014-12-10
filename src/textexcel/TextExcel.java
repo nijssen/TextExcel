@@ -32,7 +32,7 @@ public class TextExcel {
 
     private static void evaluateExpression(String line) throws Exception {
         //Is it a command?
-        if ("print,exit,clear,save,load".contains(line.split("\\s")[0])) {
+        if ("print,exit,clear,save,load,help".contains(line.split("\\s")[0])) {
             evaluateCommand(line);
             return;
         }
@@ -77,6 +77,13 @@ public class TextExcel {
             case "load":
                 if(parts.length != 2) throw new Exception("No file name given");
                 PersistenceHelper.load(parts[1], matrix);
+                break;
+            case "help":
+                if(parts.length == 2) {
+                    Help.showHelpFor(parts[1]);
+                } else {
+                    Help.listTopics();
+                }
                 break;
         }
     }
