@@ -81,7 +81,7 @@ sub printinfo {
 		my $ref = $things{$_};
 		
 		print OUT "<tr><th colspan=3>$_</th></tr>";
-		foreach(sort { $a->[0] <=> $b->[1] } @$ref) {
+		foreach(sort { $a->[0] cmp $b->[1] } @$ref) {
 			my @t = @$_;
 			print OUT "<tr>";
 			print OUT (map { + "<td>", $_, "</td>" } @t);
