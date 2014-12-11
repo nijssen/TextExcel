@@ -1,3 +1,64 @@
-#!/bin/sh
+#!/bin/bash
 
-exec find * -name '*.java' | xargs a2ps -o /tmp/o.pdf -2 -M Letter
+#Parse arguments
+DOPRINT=0
+HEADERTEXT=" "
+while getopts :pt: option
+do
+	case "$option" in
+	p)
+		DOPRINT=1
+		;;
+	t)
+		HEADERTEXT="$OPTARG"
+		;;
+	*)
+		echo Invalid argument
+		exit 1
+		;;
+	esac
+done
+
+#Generate PostScript
+PSFILE=$PWD/dist/code.ps
+find src/* test/* *.prop* -name '*.java' -o -name '*.properties' | xargs a2ps -o $PSFILE -1 -M Letter -C --left-title="$HEADERTEXT" -f 11 
+
+if [ $DOPRINT == 0 ]; then
+	exit 0
+fi
+
+#Print if desired
+PAGES=$(perl -x $0 $PSFILE)
+WAITOPTS=""
+for x in $PAGES
+do
+	lpr -P PSC_1600/bw3 -o number-up=2 -o page-ranges=$x $WAITOPTS $PSFILE
+	WAITOPTS="-o job-hold-until=indefinite" #To have time to flip pages
+done
+
+exit 0;
+
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my $pagecnt = 0;
+
+while(<ARGV>) {
+	next unless /%%Pages: ([0-9]+)/;
+	$pagecnt = $1;
+	last;
+}
+
+my(@pages1, @pages2);
+for(my $i = 1; $i <= $pagecnt / 2;) {
+	push @pages1, $i++;
+	last if $i > $pagecnt / 2;
+	push @pages2, $i++;
+}
+
+print join ",", @pages1;
+print "\n";
+print join ",", @pages2;
+print "\n";

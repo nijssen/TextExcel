@@ -182,6 +182,7 @@ public class CellMatrix {
         }
     }
 
+    //If only Java had structs...
     private static class Coordinate {
         public int row;
         public int column;

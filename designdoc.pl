@@ -1,7 +1,8 @@
-#!perl
+#!/usr/bin/perl
 
 use strict;
 use warnings;
+use List::Util qw/first/;
 
 open OUT, ">", "doc.html" or die $!;
 
@@ -11,8 +12,11 @@ foreach(@ARGV) {
 	my @lines = <FILE>;
 	
 	#Find class name
-	my @cl = split /\s/, grep { /class (.*?)/ } @lines;
-	my $cidx = grep { $cl[$_] =~ /class/ } 0..$#cl;
+	my @cl =
+		map { split /\s+/, $_  }
+		grep { /class/ }
+		@lines;
+	my $cidx = first { $cl[$_] eq "class" } 0..$#cl;
 	my $classname = $cl[$cidx + 1] || die $!;
 	
 	my @variables = ();
@@ -21,9 +25,11 @@ foreach(@ARGV) {
 	
 	#Find parts of class
 	foreach(@lines) {
-		if($_ !~ /(public|protected|private)/) {
-			s/^\s+//g;
-			next unless /^\// || /^*/;
+		s/^\s+//g;
+		if($_ !~ /^(public|protected|private)/) {
+			next unless /^\*/;
+			s/\*//g;
+			s/@(.*?)//g;
 			$desc .= $_;
 			next;
 		}
@@ -84,11 +90,20 @@ sub printinfo {
 		foreach(sort { $a->[0] cmp $b->[1] } @$ref) {
 			my @t = @$_;
 			print OUT "<tr>";
-			print OUT (map { + "<td>", $_, "</td>" } @t);
+			print OUT (map {"<td>" . $_ . "</td>" } @t);
 			print OUT "</tr>\n";
 		}
 	}
 	
 	print OUT "</table>\n\n";
 		
+}
+
+sub firstindex {
+	my $search = shift;
+
+	my %idx;
+	@idx{@_} = (0..$#_);
+
+	return $idx{$search};
 }

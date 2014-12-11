@@ -13,6 +13,8 @@ build/
 *.war
 *.ear
 
+doc.html
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 >>>>>>> e47a9933cb2f56ff4854d0f614b123499a942d66
