@@ -11,10 +11,9 @@ foreach(@ARGV) {
 	my @lines = <FILE>;
 	
 	#Find class name
-	my $classname = (
-		map { (split /\s/, $_)[1] }
-		grep { /class (.*?)/ } @lines
-	)[0];
+	my @cl = split /\s/, grep { /class (.*?)/ } @lines;
+	my $cidx = grep { $cl[$_] =~ /class/ } 0..$#cl;
+	my $classname = $cl[$cidx + 1] || die $!;
 	
 	my @variables = ();
 	my @functions = ();
@@ -23,7 +22,8 @@ foreach(@ARGV) {
 	#Find parts of class
 	foreach(@lines) {
 		if($_ !~ /(public|protected|private)/) {
-			s/\*//;
+			s/^\s+//g;
+			next unless /^\// || /^*/;
 			$desc .= $_;
 			next;
 		}
@@ -50,7 +50,7 @@ foreach(@ARGV) {
 			push @functions, [
 				(split /\Q(\E/, $name)[0], #name
 				$type,
-				\@paramtypes,
+				join ", ", @paramtypes,
 				$desc
 			];
 		} else {
