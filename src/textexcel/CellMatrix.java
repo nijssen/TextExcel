@@ -14,8 +14,7 @@ public class CellMatrix {
     private Cell[][] data;
     private ArrayList<String> cellNames;
     private static final int COLUMN_WIDTH = 12;
-    private static final String CELL_CLASSES_PREFIX = "textexcel.cell.";
-    private static final String CELL_CLASSES = "DoubleCell,DateCell,StringCell";
+    private static final Class[] CELL_CLASSES = { FormulaCell.class, DoubleCell.class, DateCell.class, StringCell.class };
     private static final String FILE_RECORD_SEPERATOR = ";";
     
     /**
@@ -117,10 +116,10 @@ public class CellMatrix {
 
     public void set(int cellIndexR, int cellIndexC, String expr) throws Exception {
         //Try to fit the expression to each type of cell
-        for(String cn : CELL_CLASSES.split(",")) {
+        for(Class classToTry : CELL_CLASSES) {
             Cell that = null;
             try {
-                that = (Cell) Class.forName(CELL_CLASSES_PREFIX + cn).newInstance();
+                that = (Cell) classToTry.newInstance();
                 that.set(expr); //this will fail if the input isn't the right type for it
             } catch(InstantiationException | ExceptionInInitializerError ie) {
                 throw new Exception("Instantiation failed: " + ie.getMessage());
@@ -176,7 +175,7 @@ public class CellMatrix {
     public void loadFrom(String[] input) throws Exception {
         for(int r = 0; r < this.data.length; r++) {
             String[] cellStrings = input[r].split(FILE_RECORD_SEPERATOR);
-            for(int c = 0; r < this.data[0].length; c++) {
+            for(int c = 0; c < this.data[0].length; c++) {
                 this.set(r, c, cellStrings[c]);
             }
         }

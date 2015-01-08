@@ -5,8 +5,6 @@ package textexcel.cell;
  * @author thomas
  */
 public class DoubleCell extends Cell {
-    //private double value;
-    
     /**
      * Create a new DoubleCell class.
      * 
