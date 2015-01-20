@@ -45,6 +45,10 @@ public abstract class Cell {
             //special case for string cell in which we need quotes
             String quotes = this instanceof StringCell ? "\"" : "";
             return quotes + cv + quotes + "\n" + this.getClassType();
+        } else if(cv != null && length < 0) {
+            //like previous, but without the nonsense of the cell type
+            String quotes = this instanceof StringCell ? "\"" : "";
+            return quotes + cv + quotes;
         } else {
             //truncate to length
             if (cv.length() > 12) {

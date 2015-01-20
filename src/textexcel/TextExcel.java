@@ -16,7 +16,7 @@ public class TextExcel {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
 
-        matrix = new CellMatrix(10, 10);
+        matrix = CellMatrix.newInstance(10, 10);
 
         while (true) {
             System.out.print("Enter a command: ");

@@ -10,7 +10,6 @@ import textexcel.cell.*;
  * @author thomas
  */
 public class CellMatrix {
-    
     private Cell[][] data;
     private ArrayList<String> cellNames;
     private static final int COLUMN_WIDTH = 12;
@@ -23,11 +22,21 @@ public class CellMatrix {
      * @author thomas
      * @returns new CellMatrix class
      */
-    public CellMatrix(int width, int height) {
+    private CellMatrix(int width, int height) {
         this.data = new Cell[height][width]; //TODO support more types
         this.cellNames = new ArrayList<>();
         this.setCellNames();
         this.setDefaultValues();
+    }
+    
+    public static CellMatrix newInstance(int width, int height) {
+        CellMatrix m = new CellMatrix(width, height);
+        CellMatrixSingletonHolder.INSTANCE = m;
+        return m;
+    }
+    
+    public static CellMatrix getInstance() {
+        return CellMatrixSingletonHolder.INSTANCE;
     }
 
     private void setCellNames() {
@@ -90,7 +99,6 @@ public class CellMatrix {
                 this.data[i][j] = new StringCell("");
             }
         }
-        
     }
     
     private Coordinate cellNameToCoord(String cellName) {
@@ -135,13 +143,16 @@ public class CellMatrix {
     }
     
     public String get(String cellName) {
+        return this.get(cellName, true);
+    }
+    
+    public String get(String cellName, boolean showCellType) {
         Coordinate c = this.cellNameToCoord(cellName);
-        
-        return this.get(c.row, c.column);
+        return this.get(c.row, c.column, showCellType);
     }
 
-    private String get(int row, int column) {
-        return this.data[row][column].getDisplayValue(0);
+    private String get(int row, int column, boolean showCellType) {
+        return this.data[row][column].getDisplayValue(showCellType ? 0 : -1);
     }
 
     public void clear(String cellName) throws Exception {
@@ -185,5 +196,9 @@ public class CellMatrix {
     private static class Coordinate {
         public int row;
         public int column;
-    }    
+    }
+    
+    private static class CellMatrixSingletonHolder {
+        private static CellMatrix INSTANCE;
+    }
 }
