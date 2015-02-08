@@ -114,8 +114,8 @@ public class CellMatrix {
         
         //convert into a coordinates
         Coordinate ret = new Coordinate();
-        ret.row = cellIndex / this.data.length;
-        ret.column = cellIndex % this.data.length; 
+        ret.row = cellIndex / this.data[0].length;
+        ret.column = cellIndex % this.data[0].length; 
         
         return ret;
     }
@@ -141,11 +141,11 @@ public class CellMatrix {
                 continue; //try the next one
             }
             
-            this.data[cellIndexR][cellIndexC] = (Cell)that; //only happens if prev is success
+            this.data[cellIndexR][cellIndexC] = that; //only happens if prev is success
             return;
         }
         
-        throw new Exception("No suitable data type found.");
+        throw new Exception("There is no cell type available for that expression");
     }
     
     public String get(String cellName) {
@@ -196,6 +196,28 @@ public class CellMatrix {
                 this.set(r, c, cellStrings[c]);
             }
         }
+    }
+
+    public ArrayList<Cell> getRectangularRange(String lowerName, String upperName) {
+        Coordinate lowerCoord = this.cellNameToCoord(lowerName);
+        Coordinate upperCoord = this.cellNameToCoord(upperName);
+        
+        //Check to make sure they're the right way around
+        if(lowerCoord.row > upperCoord.row || lowerCoord.column > upperCoord.column) {
+            //switch them
+            Coordinate tmp = lowerCoord;
+            lowerCoord = upperCoord;
+            upperCoord = tmp;
+        }
+        
+        ArrayList<Cell> range = new ArrayList<>();
+        for(int r = lowerCoord.row; r <= upperCoord.row; r++) {
+            for(int c = lowerCoord.column; c <= upperCoord.column; c++) {
+                range.add(this.data[r][c]);
+            }
+        }
+        
+        return range;
     }
 
     //If only Java had structs...

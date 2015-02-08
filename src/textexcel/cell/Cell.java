@@ -69,7 +69,7 @@ public abstract class Cell {
     private String getClassType() {
         String cn = this.getClass().getName();
         String name = cn.substring(cn.lastIndexOf('.') + 1, cn.indexOf("Cell"));
-        name = (this instanceof DoubleCell) ? "Number" : name; //we'll kindly call this a "special" case...
+        name = (this instanceof DoubleCell) ? "Number" : name; //because the requirements say so
         return "[" + name + "]";
     }
 }
