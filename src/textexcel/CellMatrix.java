@@ -39,6 +39,10 @@ public class CellMatrix {
         return CellMatrixSingletonHolder.INSTANCE;
     }
 
+    public ArrayList<String> getCellNames() {
+        return this.cellNames;
+    }
+    
     private void setCellNames() {
         for(int i = 0; i < this.data.length; i++) {
             for(int j = 0; j < this.data[0].length; j++) {
@@ -131,6 +135,8 @@ public class CellMatrix {
                 that.set(expr); //this will fail if the input isn't the right type for it
             } catch(InstantiationException | ExceptionInInitializerError ie) {
                 throw new Exception("Instantiation failed: " + ie.getMessage());
+            } catch(FormulaCellException fe) {
+                throw new Exception("Error parsing formula: " + fe.getMessage());
             } catch(Exception e) {
                 continue; //try the next one
             }
@@ -154,7 +160,7 @@ public class CellMatrix {
     private String get(int row, int column, boolean showCellType) {
         return this.data[row][column].getDisplayValue(showCellType ? 0 : -1);
     }
-
+    
     public void clear(String cellName) throws Exception {
         Coordinate c = this.cellNameToCoord(cellName);
         

@@ -35,7 +35,7 @@ public abstract class Cell {
      * @return
      */
     public String getDisplayValue(int length) {
-        String cv = this.computeValue();
+        String cv = this.get().toString();
         
         if (cv != null && cv.length() == 0 && length == 0) {
             return "<empty>";
@@ -64,10 +64,6 @@ public abstract class Cell {
 
             return padStr + cv + padStr + (padLength % 2 != 0 ? " " : "");
         }
-    }
-
-    protected String computeValue() {
-        return this.value.toString();
     }
 
     private String getClassType() {

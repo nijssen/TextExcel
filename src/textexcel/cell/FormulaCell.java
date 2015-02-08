@@ -1,6 +1,9 @@
 package textexcel.cell;
 
+import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.script.*;
 import textexcel.CellMatrix;
 
@@ -9,10 +12,7 @@ import textexcel.CellMatrix;
  * @author thomas
  */
 public class FormulaCell extends Cell {
-    private String formulaStr;
-    
     private ScriptEngine scriptEngine;
-    
     
     /**
      * Create a new FormulaCell class.
@@ -32,9 +32,7 @@ public class FormulaCell extends Cell {
     public void set(String expr) throws Exception {
         checkIfFormula(expr); //throw exception if not
         super.set(expr);
-        
-        //Evaluate the expression
-        this.evaluateFormula();
+        this.evaluateFormula();   
     }
     
     private static void checkIfFormula(String expr) throws Exception {
@@ -46,28 +44,17 @@ public class FormulaCell extends Cell {
         Bindings b = this.scriptEngine.createBindings();
         CellMatrix theMatrix = CellMatrix.getInstance(); //get the CellMatrix instance
         
-        //For each token, check its type
-        StringTokenizer st = new StringTokenizer(this.expr);
-        for(String token = st.nextToken(); st.hasMoreTokens(); token = st.nextToken()) {
-            //It can be an operator
-            if("()+-/*".contains(token)) continue;
-            
-            //It can be a number
-            try { Double.parseDouble(token); continue; }
-            catch(Exception e) {} //It isn't a double
-            
-            //It can be a cell name
+        for (Iterator<String> it = theMatrix.getCellNames().iterator(); it.hasNext();) {
+            String cellName = it.next();
             try {
-                String v = theMatrix.get(token, false);
-                b.put(token, Double.parseDouble(v));
-                continue;
-            } catch(Exception e) {} //cell doesn't exist
-            
-            //Wasn't anything, throw exception
-            throw new Exception("Invalid token in expression: " + token);
+                b.put(cellName, Double.parseDouble(theMatrix.get(cellName, false)));
+            } catch(Exception e) {
+                continue; //not something that can be used in a formula
+            }
         }
         
         //Now evaluate it, and set the value
-        this.value = (double) this.scriptEngine.eval(this.expr, b);
+        this.scriptEngine.eval("var RET = " + this.expr + ";", b);
+        this.value = b.get("RET");
     }
 }
