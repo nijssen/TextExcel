@@ -35,7 +35,7 @@ public abstract class Cell {
      * @return
      */
     public String getDisplayValue(int length) {
-        String cv = this.computeValue();
+        String cv = this.get().toString();
         
         if (cv != null && cv.length() == 0 && length == 0) {
             return "<empty>";
@@ -45,6 +45,10 @@ public abstract class Cell {
             //special case for string cell in which we need quotes
             String quotes = this instanceof StringCell ? "\"" : "";
             return quotes + cv + quotes + "\n" + this.getClassType();
+        } else if(cv != null && length < 0) {
+            //like previous, but without the nonsense of the cell type
+            String quotes = this instanceof StringCell ? "\"" : "";
+            return quotes + cv + quotes;
         } else {
             //truncate to length
             if (cv.length() > 12) {
@@ -62,14 +66,10 @@ public abstract class Cell {
         }
     }
 
-    protected String computeValue() {
-        return this.value.toString();
-    }
-
     private String getClassType() {
         String cn = this.getClass().getName();
         String name = cn.substring(cn.lastIndexOf('.') + 1, cn.indexOf("Cell"));
-        name = (this instanceof DoubleCell) ? "Number" : name; //we'll kindly call this a "special" case...
+        name = (this instanceof DoubleCell) ? "Number" : name; //because the requirements say so
         return "[" + name + "]";
     }
 }

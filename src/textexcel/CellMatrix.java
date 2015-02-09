@@ -10,12 +10,10 @@ import textexcel.cell.*;
  * @author thomas
  */
 public class CellMatrix {
-    
     private Cell[][] data;
     private ArrayList<String> cellNames;
     private static final int COLUMN_WIDTH = 12;
-    private static final String CELL_CLASSES_PREFIX = "textexcel.cell.";
-    private static final String CELL_CLASSES = "DoubleCell,DateCell,StringCell";
+    private static final Class[] CELL_CLASSES = { FormulaCell.class, DoubleCell.class, DateCell.class, StringCell.class };
     private static final String FILE_RECORD_SEPERATOR = ";";
     
     /**
@@ -24,13 +22,27 @@ public class CellMatrix {
      * @author thomas
      * @returns new CellMatrix class
      */
-    public CellMatrix(int width, int height) {
+    private CellMatrix(int width, int height) {
         this.data = new Cell[height][width]; //TODO support more types
         this.cellNames = new ArrayList<>();
         this.setCellNames();
         this.setDefaultValues();
     }
+    
+    public static CellMatrix newInstance(int width, int height) {
+        CellMatrix m = new CellMatrix(width, height);
+        CellMatrixSingletonHolder.INSTANCE = m;
+        return m;
+    }
+    
+    public static CellMatrix getInstance() {
+        return CellMatrixSingletonHolder.INSTANCE;
+    }
 
+    public ArrayList<String> getCellNames() {
+        return this.cellNames;
+    }
+    
     private void setCellNames() {
         for(int i = 0; i < this.data.length; i++) {
             for(int j = 0; j < this.data[0].length; j++) {
@@ -91,7 +103,6 @@ public class CellMatrix {
                 this.data[i][j] = new StringCell("");
             }
         }
-        
     }
     
     private Coordinate cellNameToCoord(String cellName) {
@@ -103,8 +114,8 @@ public class CellMatrix {
         
         //convert into a coordinates
         Coordinate ret = new Coordinate();
-        ret.row = cellIndex / this.data.length;
-        ret.column = cellIndex % this.data.length; 
+        ret.row = cellIndex / this.data[0].length;
+        ret.column = cellIndex % this.data[0].length; 
         
         return ret;
     }
@@ -117,34 +128,39 @@ public class CellMatrix {
 
     public void set(int cellIndexR, int cellIndexC, String expr) throws Exception {
         //Try to fit the expression to each type of cell
-        for(String cn : CELL_CLASSES.split(",")) {
+        for(Class classToTry : CELL_CLASSES) {
             Cell that = null;
             try {
-                that = (Cell) Class.forName(CELL_CLASSES_PREFIX + cn).newInstance();
+                that = (Cell) classToTry.newInstance();
                 that.set(expr); //this will fail if the input isn't the right type for it
             } catch(InstantiationException | ExceptionInInitializerError ie) {
                 throw new Exception("Instantiation failed: " + ie.getMessage());
+            } catch(FormulaCellException fe) {
+                throw new Exception("Error parsing formula: " + fe.getMessage());
             } catch(Exception e) {
                 continue; //try the next one
             }
             
-            this.data[cellIndexR][cellIndexC] = (Cell)that; //only happens if prev is success
+            this.data[cellIndexR][cellIndexC] = that; //only happens if prev is success
             return;
         }
         
-        throw new Exception("No suitable data type found.");
+        throw new Exception("There is no cell type available for that expression");
     }
     
     public String get(String cellName) {
+        return this.get(cellName, true);
+    }
+    
+    public String get(String cellName, boolean showCellType) {
         Coordinate c = this.cellNameToCoord(cellName);
-        
-        return this.get(c.row, c.column);
+        return this.get(c.row, c.column, showCellType);
     }
 
-    private String get(int row, int column) {
-        return this.data[row][column].getDisplayValue(0);
+    private String get(int row, int column, boolean showCellType) {
+        return this.data[row][column].getDisplayValue(showCellType ? 0 : -1);
     }
-
+    
     public void clear(String cellName) throws Exception {
         Coordinate c = this.cellNameToCoord(cellName);
         
@@ -176,15 +192,41 @@ public class CellMatrix {
     public void loadFrom(String[] input) throws Exception {
         for(int r = 0; r < this.data.length; r++) {
             String[] cellStrings = input[r].split(FILE_RECORD_SEPERATOR);
-            for(int c = 0; r < this.data[0].length; c++) {
+            for(int c = 0; c < this.data[0].length; c++) {
                 this.set(r, c, cellStrings[c]);
             }
         }
+    }
+
+    public ArrayList<Cell> getRectangularRange(String lowerName, String upperName) {
+        Coordinate lowerCoord = this.cellNameToCoord(lowerName);
+        Coordinate upperCoord = this.cellNameToCoord(upperName);
+        
+        //Check to make sure they're the right way around
+        if(lowerCoord.row > upperCoord.row || lowerCoord.column > upperCoord.column) {
+            //switch them
+            Coordinate tmp = lowerCoord;
+            lowerCoord = upperCoord;
+            upperCoord = tmp;
+        }
+        
+        ArrayList<Cell> range = new ArrayList<>();
+        for(int r = lowerCoord.row; r <= upperCoord.row; r++) {
+            for(int c = lowerCoord.column; c <= upperCoord.column; c++) {
+                range.add(this.data[r][c]);
+            }
+        }
+        
+        return range;
     }
 
     //If only Java had structs...
     private static class Coordinate {
         public int row;
         public int column;
-    }    
+    }
+    
+    private static class CellMatrixSingletonHolder {
+        private static CellMatrix INSTANCE;
+    }
 }

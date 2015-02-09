@@ -3,8 +3,6 @@ package textexcel.cell;
 import java.text.SimpleDateFormat;
 
 public class DateCell extends Cell {
-    //private Date value;
-    
     private final static String DATE_FORMAT = "MM/dd/yyyy";
     private final SimpleDateFormat sdf;
     
@@ -16,11 +14,6 @@ public class DateCell extends Cell {
     public void set(String expr) throws Exception {
         super.set(expr);
         
-        this.value = this.sdf.parse(expr);
-    }
-    
-    @Override
-    protected String computeValue() {
-        return this.sdf.format(this.value);
+        this.value = this.sdf.format(this.sdf.parse(expr));
     }
 }

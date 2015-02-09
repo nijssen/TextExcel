@@ -16,7 +16,13 @@ public class TextExcel {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
 
-        matrix = new CellMatrix(10, 10);
+        matrix = CellMatrix.newInstance(6, 2);
+        
+        evaluateExpression("A1 = 100");
+        evaluateExpression("A2 = ( A1 * 2 )");
+        evaluateExpression("B1 = ( A1 + 2 )");
+        evaluateExpression("B2 = 50");
+        evaluateExpression("C1 = ( sum A1 - B2 )");
 
         while (true) {
             System.out.print("Enter a command: ");
@@ -27,7 +33,6 @@ public class TextExcel {
                 System.err.println(e.getMessage() + "\n");
             }
         }
-
     }
 
     private static void evaluateExpression(String line) throws Exception {
