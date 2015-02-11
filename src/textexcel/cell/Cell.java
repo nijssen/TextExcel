@@ -44,6 +44,7 @@ public abstract class Cell {
         } else if(cv != null && length == 0) {
             //special case for string cell in which we need quotes
             String quotes = this instanceof StringCell ? "\"" : "";
+            cv = this instanceof FormulaCell ? this.expr : cv; //special case for formulas
             return quotes + cv + quotes + "\n" + this.getClassType();
         } else if(cv != null && length < 0) {
             //like previous, but without the nonsense of the cell type

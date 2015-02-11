@@ -1,0 +1,18 @@
+A1 = 30
+A2 = 40
+B1 = 50
+C3 = 243
+B2 = ( B1 * A1 / C3 )
+D1 = ( sum A1 - B2 )
+D2 = ( avg A1 - B2 )
+E1 = 05/31/1997
+E2 = "abc"
+E3 = "qwertyuiopasdfghjklzxcvbnm"
+print
+A1
+A2
+E1
+E2
+E3
+exit
+

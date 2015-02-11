@@ -12,17 +12,12 @@ public class TextExcel {
 
     /**
      * @param args the command line arguments
+     * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
 
-        matrix = CellMatrix.newInstance(6, 2);
-        
-        evaluateExpression("A1 = 100");
-        evaluateExpression("A2 = ( A1 * 2 )");
-        evaluateExpression("B1 = ( A1 + 2 )");
-        evaluateExpression("B2 = 50");
-        evaluateExpression("C1 = ( sum A1 - B2 )");
+        matrix = CellMatrix.newInstance(10, 10);
 
         while (true) {
             System.out.print("Enter a command: ");
@@ -32,6 +27,7 @@ public class TextExcel {
             } catch (Exception e) {
                 System.err.println(e.getMessage() + "\n");
             }
+            System.out.println();
         }
     }
 

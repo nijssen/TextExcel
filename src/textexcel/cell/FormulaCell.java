@@ -2,9 +2,6 @@ package textexcel.cell;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.script.*;
 import textexcel.CellMatrix;
 

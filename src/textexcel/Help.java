@@ -1,8 +1,6 @@
 package textexcel;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Properties;
 
 class Help {
@@ -31,9 +29,9 @@ class Help {
         if(isInitialized) return; //already done
         
         helpTopics = new Properties();
-        helpTopics.load(new FileInputStream("helpmsg.properties")); //load helpmsg.properties
-        
+        helpTopics.load(Help.class.getResourceAsStream("/textexcel/helpmsg.properties"));
+            
         isInitialized = true; //so we don't do it every time
     }
-
+    
 }
